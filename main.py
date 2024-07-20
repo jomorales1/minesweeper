@@ -3,12 +3,21 @@ from models.game import Board, BoardState, BoardResult
 
 import pygame
 
+# constants
 ROWS = 20
 COLUMNS = 20
 CELL_SIZE = 25
 LEFT = 1
 RIGHT = 3
 GREY = (185, 185, 185)
+
+# assets
+UNOPENED = pygame.image.load('assets/unopened.png')
+FLAG = pygame.image.load('assets/flag.png')
+FLAG_WRONG = pygame.image.load('assets/flag_wrong.png')
+MINE = pygame.image.load('assets/mine.png')
+EXPLODED_MINE = pygame.image.load('assets/exploded_mine.png')
+NUMBERS = [pygame.image.load(f'assets/{i}.png') for i in range(0, 9)]
 
 # pygame setup
 pygame.init()
@@ -55,18 +64,18 @@ while running:
     # Draw board
     for i in range(board.rows):
         for j in range(board.columns):
-            asset = pygame.image.load('assets/unopened.png')
+            asset = UNOPENED
             if board.cells[i][j].flagged:
-                asset = pygame.image.load('assets/flag.png')
+                asset = FLAG
                 if board.state == BoardState.FINISHED and not board.cells[i][j].is_mine:
-                    asset = pygame.image.load('assets/flag_wrong.png')
+                    asset = FLAG_WRONG
             elif board.cells[i][j].is_mine and board.cells[i][j].revealed:
                 if board.cells[i][j].exploded:
-                    asset = pygame.image.load('assets/exploded_mine.png')
+                    asset = EXPLODED_MINE
                 else:
-                    asset = pygame.image.load('assets/mine.png')
+                    asset = MINE
             elif board.cells[i][j].revealed:
-                asset = pygame.image.load(f'assets/{board.cells[i][j].value}.png')
+                asset = NUMBERS[board.cells[i][j].value]
             cell_img = pygame.transform.scale(asset, (CELL_SIZE, CELL_SIZE))
             cell_rect = cell_img.get_rect()
             cell_rect.topleft = (j * CELL_SIZE, i * CELL_SIZE)
